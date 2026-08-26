@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Área de Membros — Acervos Católicos 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0c;--bg-2:#0e0e11;--card:#161417;--card-2:#1f1c22;
+    --line:rgba(231,183,101,.20);--text:#f6f2ea;--muted:#a39c92;
+    --gold:#e7b765;--gold-lt:#f6dd9b;--gold-dp:#b8893f;--glow:rgba(255,193,120,.4);
+    --radius:16px;--shadow:0 24px 60px rgba(0,0,0,.5);--sidebar:250px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{margin:0}
+  .serif{font-family:'Cormorant Garamond',serif}
+
+  /* SIDEBAR (desktop) */
+  .sidebar{position:fixed;top:0;left:0;width:var(--sidebar);height:100vh;background:linear-gradient(180deg,#141118,#0d0c0f);border-right:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;gap:6px;overflow-y:auto;z-index:40}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:22px;padding:0 6px}
+  .brand .cross{color:var(--gold);font-size:1.5rem}
+  .brand b{font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.02em;font-size:1.02rem;text-transform:uppercase;line-height:1.05}
+  .navlink{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:11px;color:var(--muted);font-weight:600;font-size:.94rem;cursor:pointer;transition:.2s}
+  .navlink svg{flex:0 0 auto}
+  .navlink:hover{background:rgba(231,183,101,.08);color:var(--text)}
+  .navlink.active{background:linear-gradient(135deg,rgba(231,183,101,.18),rgba(231,183,101,.05));color:var(--gold-lt);border:1px solid var(--line)}
+  .side-foot{margin-top:auto;padding-top:18px;border-top:1px solid var(--line);font-size:.76rem;color:var(--muted)}
+
+  /* CONTEÚDO */
+  .main{margin-left:var(--sidebar);padding:38px 40px 90px;max-width:1180px}
+  .hero-card{background:radial-gradient(600px 300px at 20% -20%,rgba(231,183,101,.16),transparent 60%),var(--card);border:1px solid var(--line);border-radius:22px;padding:34px 32px;margin-bottom:34px}
+  .hero-card .eyebrow{color:var(--gold);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;font-weight:700;margin-bottom:10px}
+  .hero-card h1{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.06;margin-bottom:12px}
+  .hero-card p{color:var(--muted);max-width:640px;margin:0}
+  .view{display:none}
+  .view.active{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .sec-head{display:flex;align-items:center;gap:12px;margin:0 0 18px}
+  .sec-head h2{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:1.4rem;letter-spacing:.01em}
+  .sec-head .count{font-size:.76rem;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .module{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;display:flex;flex-direction:column;gap:8px;transition:.22s}
+  .module:hover{transform:translateY(-4px);border-color:var(--gold-dp);box-shadow:0 14px 30px rgba(0,0,0,.4)}
+  .mod-ico{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,rgba(231,183,101,.18),rgba(231,183,101,.05));border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--gold-lt)}
+  .module h3{font-family:'Inter',sans-serif;font-weight:800;font-size:1.02rem;margin-top:4px}
+  .module p{color:var(--muted);font-size:.9rem;flex:1}
+  .dl{display:inline-block;text-align:center;margin-top:6px;background:linear-gradient(135deg,var(--gold-lt),var(--gold),var(--gold-dp));color:#17130c;font-weight:800;font-size:.92rem;padding:11px 16px;border-radius:999px}
+  .dl:hover{filter:brightness(1.06)}
+  .module.locked{opacity:.72}
+  .mini-link{display:block;text-align:center;margin-top:2px;font-size:.78rem;color:var(--muted);text-decoration:underline;cursor:pointer}
+  .mini-link:hover{color:var(--gold-lt)}
+
+  /* calculadora */
+  .calc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin:18px 0}
+  .calc-field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+  .calc-field input{width:100%;background:var(--card-2);border:1px solid var(--line);border-radius:9px;color:var(--text);padding:10px 12px;font-size:.95rem;font-family:'Inter',sans-serif}
+  .calc-field input:focus{outline:none;border-color:var(--gold-dp)}
+  .calc-btn{display:block;width:100%;text-align:center;margin:20px 0 4px;background:linear-gradient(135deg,var(--gold-lt),var(--gold),var(--gold-dp));color:#17130c;font-weight:800;font-size:.98rem;padding:13px 16px;border-radius:12px;border:0;cursor:pointer;font-family:'Inter',sans-serif}
+  .calc-btn:hover{filter:brightness(1.06)}
+  .calc-result{background:var(--card-2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:18px}
+  .calc-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:.92rem;color:#d9d3c9}
+  .calc-row:last-of-type{border-bottom:0}
+  .calc-row span:last-child{font-weight:700;color:var(--text)}
+  .calc-total-row{display:flex;justify-content:space-between;padding:12px 0 0;margin-top:8px;border-top:1px solid var(--line);font-size:1rem;color:var(--text);font-weight:700}
+  .calc-final{display:flex;justify-content:space-between;align-items:center;margin-top:14px;background:linear-gradient(135deg,rgba(231,183,101,.18),rgba(231,183,101,.05));border:1px solid var(--gold-dp);border-radius:12px;padding:14px 18px}
+  .calc-final span:first-child{font-weight:700;color:var(--gold-lt)}
+  .calc-final span:last-child{font-family:'Anton',sans-serif;font-weight:400;font-size:1.4rem;color:var(--gold-lt)}
+  @media(max-width:480px){.calc-grid{grid-template-columns:1fr 1fr}}
+  .badge-soon{display:inline-block;margin-top:6px;text-align:center;background:var(--card-2);border:1px solid var(--line);color:var(--muted);font-size:.82rem;font-weight:600;padding:10px 14px;border-radius:999px}
+
+  /* guias */
+  .guide-card{cursor:pointer}
+  .support-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 24px;max-width:640px}
+  .support-box a{color:var(--gold-lt);font-weight:700}
+
+  /* BOTTOM NAV (mobile) */
+  .bottomnav{display:none}
+
+  @media(max-width:900px){
+    .sidebar{display:none}
+    .main{margin-left:0;padding:24px 16px 96px}
+    .bottomnav{display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(13,12,15,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:50;padding:8px 4px;justify-content:space-around}
+    .bottomnav .navlink{flex-direction:column;gap:3px;font-size:.62rem;padding:6px 4px;border:0;text-align:center;flex:1}
+    .bottomnav .navlink.active{background:none;border:0;color:var(--gold-lt)}
+    .bottomnav .navlink svg{width:22px;height:22px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  }
+
+  /* MODAL DE GUIA */
+  .gmodal{position:fixed;inset:0;z-index:9999;display:none;background:rgba(6,6,8,.86);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);overflow-y:auto;padding:24px 16px}
+  .gmodal.open{display:block}
+  .gmodal-panel{max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .gmodal-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 22px;background:linear-gradient(180deg,#1b1820,#161417);border-bottom:1px solid var(--line);z-index:2}
+  .gmodal-head h3{font-family:'Cormorant Garamond',serif;font-size:1.55rem;color:var(--gold-lt)}
+  .gmodal-close{background:none;border:1px solid var(--line);color:var(--muted);width:38px;height:38px;border-radius:50%;font-size:1.4rem;line-height:1;cursor:pointer;flex:0 0 auto}
+  .gcontent{padding:26px 30px 42px;color:#d9d3c9;font-size:1rem;line-height:1.72}
+  .gcontent .lead{font-size:1.08rem;color:var(--muted);margin:0 0 6px}
+  .gcontent h2{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:1.5rem;margin:26px 0 10px}
+  .gcontent h3{color:var(--gold-lt);font-size:1.08rem;margin:18px 0 6px}
+  .gcontent p{margin:0 0 12px} .gcontent ul{margin:0 0 14px;padding-left:20px} .gcontent li{margin:6px 0}
+  .gcontent strong{color:var(--text)}
+  .gcontent table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
+  .gcontent th,.gcontent td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+  .gcontent th{background:rgba(231,183,101,.10);color:var(--gold-lt);font-weight:700}
+  .gcontent td{color:#d9d3c9}
+  .gcontent .tip{background:rgba(231,183,101,.08);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:10px;padding:12px 14px;margin:16px 0}
+  @media(max-width:600px){.gcontent{padding:20px 18px 34px}.gmodal{padding:12px 8px}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand"><span class="cross">✝</span><b>Acervos<br>Católicos 3D</b></div>
+  <div class="navlink active" data-view="inicio"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg> Início</div>
+  <div class="navlink" data-view="conteudos"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Conteúdos</div>
+  <div class="navlink" data-view="bonus"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9"/></svg> Bônus</div>
+  <div class="navlink" data-view="guias"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg> Guias</div>
+  <div class="navlink" data-view="atualizacoes"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg> Atualizações</div>
+  <div class="navlink" data-view="suporte"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Suporte</div>
+  <div class="side-foot">Acesso vitalício<br>© <span class="ano"></span></div>
+</aside>
+
+<main class="main">
+  <!-- INÍCIO -->
+  <section class="view active" id="inicio">
+    <div class="hero-card">
+      <div class="eyebrow">✝ Área de Membros</div>
+      <h1>Bem-vindo aos Acervos Católicos 3D</h1>
+      <p>Aqui está tudo o que você adquiriu: a coleção completa de arquivos STL católicos, os bônus e os guias práticos. Comece pela pasta "Comece Aqui" e vá explorando cada categoria.</p>
+    </div>
+    <div class="sec-head"><h2>Comece por aqui</h2></div>
+    <div class="grid">
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Comece Aqui</h3>
+          <p>Leia primeiro: como baixar, organizar e usar seus arquivos.</p>
+          <a class="dl" data-key="start" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>STL Católicos</h3>
+          <p>A coleção principal de modelos católicos para impressão 3D.</p>
+          <a class="dl" data-key="main" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module guide-card" data-guide="tut_zero">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Guia: Do Zero ao Lucro</h3>
+          <p>O passo a passo pra tirar o primeiro projeto do papel.</p>
+          <span class="dl">Ler guia</span>
+        </article>
+    </div>
+  </section>
+
+  <!-- CONTEÚDOS -->
+  <section class="view" id="conteudos">
+    <div class="sec-head"><h2>Conteúdos</h2><span class="count">8 pastas</span></div>
+    <div class="grid">
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Comece Aqui</h3>
+          <p>Leia primeiro: como baixar, organizar e usar seus arquivos.</p>
+          <a class="dl" data-key="start" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>STL Católicos</h3>
+          <p>A coleção principal de modelos católicos para impressão 3D.</p>
+          <a class="dl" data-key="main" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Litofania Católica</h3>
+          <p>Arquivos de litofania para efeitos de luz e sombra.</p>
+          <a class="dl" data-key="lito" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Quadros Decorativos em Relevo</h3>
+          <p>Quadros e placas em relevo para parede.</p>
+          <a class="dl" data-key="quadros" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Crucifixos e Medalhões</h3>
+          <p>Crucifixos decorativos e medalhões variados.</p>
+          <a class="dl" data-key="cruz" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Chaveiros Personalizados</h3>
+          <p>Chaveiros católicos prontos para personalizar.</p>
+          <a class="dl" data-key="chaveiro" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Mega Pack Cristão Infantil</h3>
+          <p>Modelos cristãos voltados para o público infantil.</p>
+          <a class="dl" data-key="infantil" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>STL dos Anúncios</h3>
+          <p>Os modelos que aparecem nos anúncios, reunidos aqui.</p>
+          <a class="dl" data-key="anuncios" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+    </div>
+  </section>
+
+  <!-- BÔNUS -->
+  <section class="view" id="bonus">
+    <div class="sec-head"><h2>Bônus</h2><span class="count">7 itens</span></div>
+    <div class="grid">
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9M12 8C12 6 10.5 4 8.5 4S5 6 7 8h5zM12 8c0-2 1.5-4 3.5-4S19 6 17 8h-5z"/></svg></div>
+          <h3>Bônus 1 — Produtos que Mais Vendem</h3>
+          <p>Guia dos produtos católicos com maior procura.</p>
+          <a class="dl" data-key="b1" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9M12 8C12 6 10.5 4 8.5 4S5 6 7 8h5zM12 8c0-2 1.5-4 3.5-4S19 6 17 8h-5z"/></svg></div>
+          <h3>Bônus 2 — Tabela de Preços</h3>
+          <p>Referência de precificação para produtos 3D católicos.</p>
+          <a class="dl" data-key="b2" href="#" target="_blank" rel="noopener">Acessar</a>
+          <span class="mini-link" onclick="openGuide('b2_resumo')">Ver resumo rápido</span>
+          <a class="mini-link" href="pdfs/tabela-precificacao.pdf" target="_blank" rel="noopener">Baixar PDF</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9M12 8C12 6 10.5 4 8.5 4S5 6 7 8h5zM12 8c0-2 1.5-4 3.5-4S19 6 17 8h-5z"/></svg></div>
+          <h3>Bônus 3 — Configuração de Impressão</h3>
+          <p>Ajustes ideais para uma impressão perfeita.</p>
+          <a class="dl" data-key="b3" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9M12 8C12 6 10.5 4 8.5 4S5 6 7 8h5zM12 8c0-2 1.5-4 3.5-4S19 6 17 8h-5z"/></svg></div>
+          <h3>Bônus 4 — Mockups para Divulgação</h3>
+          <p>Artes prontas para divulgar seus produtos.</p>
+          <a class="dl" data-key="b4" href="#" target="_blank" rel="noopener">Acessar</a>
+          <span class="mini-link" onclick="openGuide('b4_resumo')">Ver resumo rápido</span>
+          <a class="mini-link" href="pdfs/mockups-artes-divulgacao-catolica.pdf" target="_blank" rel="noopener">Baixar PDF explicativo</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9M12 8C12 6 10.5 4 8.5 4S5 6 7 8h5zM12 8c0-2 1.5-4 3.5-4S19 6 17 8h-5z"/></svg></div>
+          <h3>Bônus 5 — Acabamento e Pintura</h3>
+          <p>Técnicas de acabamento, pintura e pós-produção.</p>
+          <a class="dl" data-key="b5" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9M12 8C12 6 10.5 4 8.5 4S5 6 7 8h5zM12 8c0-2 1.5-4 3.5-4S19 6 17 8h-5z"/></svg></div>
+          <h3>Bônus 6 — Pack de Luminárias 3D</h3>
+          <p>Coleção de luminárias como bônus extra.</p>
+          <a class="dl" data-key="b6" href="#" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="9" y2="10"/><line x1="12" y1="10" x2="13" y2="10"/><line x1="16" y1="10" x2="17" y2="10"/><line x1="8" y1="14" x2="9" y2="14"/><line x1="12" y1="14" x2="13" y2="14"/><line x1="16" y1="14" x2="17" y2="14"/><line x1="8" y1="18" x2="9" y2="18"/><line x1="12" y1="18" x2="13" y2="18"/></svg></div>
+          <h3>Bônus 7 — Calculadora de Precificação</h3>
+          <p>Preencha os custos e veja o preço final calculado na hora.</p>
+          <span class="dl guide-card" data-guide="calculadora" style="cursor:pointer">Abrir calculadora</span>
+        </article>
+    </div>
+  </section>
+
+  <!-- GUIAS -->
+  <section class="view" id="guias">
+    <div class="sec-head"><h2>Guias práticos</h2></div>
+    <div class="grid">
+        <article class="module guide-card" data-guide="tut_zero">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Do Zero ao Lucro</h3>
+          <p>Da impressora à primeira venda, em passos simples.</p>
+          <span class="dl">Ler guia</span>
+        </article>
+        <article class="module guide-card" data-guide="tut_vender">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3h18v4H3zM5 7v13h14V7"/></svg></div>
+          <h3>Como Vender Online</h3>
+          <p>Onde anunciar, como fotografar e precificar suas peças.</p>
+          <span class="dl">Ler guia</span>
+        </article>
+        <article class="module guide-card" data-guide="tut_filamentos">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <h3>Guia de Filamentos</h3>
+          <p>Qual material usar em cada tipo de peça.</p>
+          <span class="dl">Ler guia</span>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <h3>Checklist de Impressão Sem Erro</h3>
+          <p>O passo a passo antes, durante e depois de cada impressão.</p>
+          <a class="dl" href="pdfs/checklist-impressao-sem-erro.pdf" target="_blank" rel="noopener">Baixar PDF</a>
+          <span class="mini-link" onclick="openGuide('checklist_sem_erro')">Ver resumo rápido</span>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2l4 4-11 11H7v-4z"/><path d="M2 22l3-8 5 5z"/></svg></div>
+          <h3>Acabamento, Pintura e Pós-produção</h3>
+          <p>De impressa a obra de arte: lixamento, primer, pintura, verniz e base.</p>
+          <a class="dl" href="pdfs/guia-acabamento-pintura-pos-producao.pdf" target="_blank" rel="noopener">Baixar PDF</a>
+          <span class="mini-link" onclick="openGuide('guia_acabamento')">Ver resumo rápido</span>
+        </article>
+    </div>
+  </section>
+
+  <!-- ATUALIZAÇÕES -->
+  <section class="view" id="atualizacoes">
+    <div class="sec-head"><h2>Atualizações</h2><span class="count">2 atualizações</span></div>
+    <div class="grid">
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></div>
+          <h3>Atualização 1</h3>
+          <p>Novos arquivos e materiais adicionados ao acervo.</p>
+          <a class="dl" href="https://drive.google.com/drive/folders/1i4k24OHepgR9VHAlJ2XIXdNJmIFH-Nx7" target="_blank" rel="noopener">Acessar</a>
+        </article>
+        <article class="module">
+          <div class="mod-ico"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></div>
+          <h3>Atualização 2</h3>
+          <p>Novos arquivos e materiais adicionados ao acervo.</p>
+          <a class="dl" href="https://drive.google.com/drive/folders/1Bryi9cg102Yasq6qBwCJVmeioW_PGmt6" target="_blank" rel="noopener">Acessar</a>
+        </article>
+    </div>
+  </section>
+
+  <!-- SUPORTE -->
+  <section class="view" id="suporte">
+    <div class="sec-head"><h2>Suporte</h2></div>
+    <div class="support-box">
+      <p>Precisa de ajuda com o acesso ou com a impressão? Fale com a gente.</p>
+      <p style="margin-top:14px"><b>WhatsApp:</b> <a class="dl-contact" data-key="whatsapp" href="#">em breve</a></p>
+      <p><b>E-mail:</b> <a class="dl-contact" data-key="email" href="#">em breve</a></p>
+    </div>
+  </section>
+</main>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottomnav">
+  <div class="navlink active" data-view="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Início</div>
+  <div class="navlink" data-view="conteudos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Conteúdos</div>
+  <div class="navlink" data-view="bonus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9"/></svg>Bônus</div>
+  <div class="navlink" data-view="guias"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>Guias</div>
+  <div class="navlink" data-view="atualizacoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>Atualiz.</div>
+  <div class="navlink" data-view="suporte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Suporte</div>
+</nav>
+
+<!-- MODAL DE GUIA -->
+<div class="gmodal" id="guideModal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+  <div class="gmodal-panel">
+    <div class="gmodal-head">
+      <h3 id="guideTitle">Guia</h3>
+      <button type="button" class="gmodal-close" id="guideClose" aria-label="Fechar">&times;</button>
+    </div>
+    <div class="gcontent" id="guideBody"></div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.ano').forEach(function(e){ e.textContent=new Date().getFullYear(); });
+
+/* navegação entre views */
+(function(){
+  var links=document.querySelectorAll('.navlink'), views=document.querySelectorAll('.view');
+  function show(v){
+    views.forEach(function(s){ s.classList.toggle('active', s.id===v); });
+    links.forEach(function(l){ l.classList.toggle('active', l.dataset.view===v); });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  links.forEach(function(l){ l.addEventListener('click',function(){ show(l.dataset.view); }); });
+})();
+
+const LINKS = {
+  start:      "https://drive.google.com/drive/folders/1nShAQOOCiKy7UuDo_lcjeDcHwC2Go5iG",
+  main:       "https://drive.google.com/drive/folders/1PQ5X61ucA9KHJlf4yI2GihMmrfUOg_WL?usp=sharing",
+  lito:       "https://drive.google.com/drive/folders/1XeII0zDteQx25dV3xjjLnWepaSQe8zhL",
+  quadros:    "https://drive.google.com/drive/folders/1GAc9fP5g76hRTXHcSOwHc9fRefw8PZNf",
+  cruz:       "https://drive.google.com/drive/folders/1SXeTMq-VWxAYhrKnVAyITBnfBPUiPJRV",
+  chaveiro:   "https://drive.google.com/drive/folders/1DO0VRsjn7j6QrSqdQbgFyWyHWrqifStL",
+  infantil:   "https://drive.google.com/drive/folders/1i47t7Ta5qTe4niiFa4ycB_iM3tADI6Jd",
+  anuncios:   "https://drive.google.com/drive/folders/1CEFXs_SwJzYM7Zuxj4yvSIgHTJzXsH70",
+  b1:         "",  // Bônus 1 — Produtos que Mais Vendem
+  b2:         "https://drive.google.com/drive/folders/1OJzkmqA-tgTWO6Zpz-wro7EKKPffZJWG",  // Bônus 2 — Tabela de Preços
+  b3:         "",  // Bônus 3 — Configuração de Impressão
+  b4:         "https://canva.link/stlcj7c6hxfks74",  // Bônus 4 — Mockups para Divulgação (templates no Canva)
+  b5:         "",  // Bônus 5 — Acabamento e Pintura
+  b6:         "https://luzes3-d-member.vercel.app/",  // Bônus 6 — Pack de Luminárias 3D
+  tut_zero:       "",
+  tut_vender:     "",
+  tut_filamentos: "",
+  whatsapp:       "",
+  email:          "",
+};
+
+const GUIDES = {
+  tut_zero: { title: "Do Zero ao Lucro", html: `
+<p class="lead">Este guia te leva da caixa da impressora at&eacute; a sua primeira venda. Siga na ordem: cada etapa foi pensada pra voc&ecirc; imprimir uma lumin&aacute;ria bonita, montar a ilumina&ccedil;&atilde;o com seguran&ccedil;a e j&aacute; sair vendendo.</p>
+
+<h2>1. O que voc&ecirc; vai precisar</h2>
+<ul>
+<li><strong>Impressora 3D FDM</strong> (Creality Ender 3, Bambu Lab A1 ou similar). Qualquer uma que imprima PLA j&aacute; serve pra come&ccedil;ar.</li>
+<li><strong>Filamento PLA ou PETG</strong> &mdash; de prefer&ecirc;ncia branco, bege ou "natural", que espalham melhor a luz.</li>
+<li><strong>Fatiador (slicer)</strong> gratuito: Ultimaker Cura, Orca Slicer ou Bambu Studio.</li>
+<li><strong>Kit de ilumina&ccedil;&atilde;o LED</strong>: soquete E27, l&acirc;mpada LED (nunca incandescente), fio, plugue e interruptor &mdash; ou um cord&atilde;o de luz USB/pilha pra pe&ccedil;as menores.</li>
+</ul>
+<div class="tip"><strong>Importante:</strong> use sempre l&acirc;mpada de LED (fria). L&acirc;mpada comum esquenta e pode deformar a pe&ccedil;a de PLA. Esse &eacute; o erro n&ordm; 1 de quem come&ccedil;a.</div>
+
+<h2>2. Baixe o modelo</h2>
+<p>Aqui na &aacute;rea de membros, entre em <strong>Lumin&aacute;rias</strong> ou <strong>Vasos</strong> e baixe o arquivo <strong>.STL</strong> do modelo que quer imprimir. Comece por um modelo simples e vertical (espiral ou listrado) &mdash; imprimem bem e quase n&atilde;o d&atilde;o erro.</p>
+
+<h2>3. Prepare a impress&atilde;o (fatiar)</h2>
+<p>Abra o arquivo no fatiador e use estas configura&ccedil;&otilde;es como ponto de partida pra lumin&aacute;rias:</p>
+<ul>
+<li><strong>Altura de camada:</strong> 0,2 mm (0,28 mm se quiser mais rapidez).</li>
+<li><strong>Paredes (per&iacute;metros):</strong> 2 a 3. Mais paredes = pe&ccedil;a mais firme e luz mais suave.</li>
+<li><strong>Preenchimento:</strong> 0% a 5%. Lumin&aacute;ria quase sempre &eacute; oca pra luz passar.</li>
+<li><strong>Topo:</strong> deixe aberto se a pe&ccedil;a encaixar no soquete; feche o fundo.</li>
+<li><strong>Velocidade:</strong> 50 mm/s pra um acabamento mais limpo.</li>
+</ul>
+<p>Clique em "fatiar", confira o tempo e o <strong>peso do filamento</strong> (guarde esse n&uacute;mero &mdash; ele &eacute; a base do seu pre&ccedil;o) e envie pra impressora.</p>
+
+<h2>4. Imprima a primeira pe&ccedil;a</h2>
+<ul>
+<li>Nivele a mesa e limpe a superf&iacute;cie (&aacute;lcool isoprop&iacute;lico ajuda na ades&atilde;o).</li>
+<li>Acompanhe as primeiras camadas &mdash; 90% dos erros aparecem nos 5 primeiros minutos.</li>
+<li>N&atilde;o mexa na pe&ccedil;a durante a impress&atilde;o.</li>
+</ul>
+
+<h2>5. Acabamento</h2>
+<p>Retire a pe&ccedil;a depois que a mesa esfriar. Remova fios finos ("cabelos") passando rapidamente um soprador t&eacute;rmico. Se quiser, lixe a base com lixa fina pra ficar perfeita apoiada.</p>
+
+<h2>6. Monte a ilumina&ccedil;&atilde;o</h2>
+<ul>
+<li>Encaixe o soquete E27 com a l&acirc;mpada LED na abertura da pe&ccedil;a.</li>
+<li>Para pe&ccedil;as de mesa, use o kit com interruptor de fio; para pe&ccedil;as pequenas, um cord&atilde;o de LED a pilha/USB resolve.</li>
+<li>Teste ligada e confira se n&atilde;o esquenta demais. Com LED, ela fica s&oacute; morna.</li>
+</ul>
+<div class="tip">Seguran&ccedil;a el&eacute;trica: se voc&ecirc; n&atilde;o tem experi&ecirc;ncia, use kits de soquete j&aacute; montados (com plugue e interruptor prontos) &mdash; &eacute; s&oacute; encaixar a l&acirc;mpada.</div>
+
+<h2>7. Quanto cobrar</h2>
+<ul>
+<li><strong>Custo do filamento</strong> = (gramas &divide; 1000) &times; pre&ccedil;o do kg. Ex.: 80 g de um filamento de R$ 120/kg = R$ 9,60.</li>
+<li><strong>+ kit de luz</strong> (soquete + l&acirc;mpada + fio): some o gasto por pe&ccedil;a.</li>
+<li><strong>+ energia e desgaste:</strong> adicione uns 15% a 20%.</li>
+<li><strong>Pre&ccedil;o de venda:</strong> multiplique o custo total por 3 a 5. Design tem valor percebido alto &mdash; n&atilde;o venda barato.</li>
+</ul>
+<p>Exemplo: custo total de R$ 18 &rarr; venda entre R$ 60 e R$ 90. &Eacute; a faixa que essas pe&ccedil;as costumam alcan&ccedil;ar.</p>
+
+<h2>8. Fa&ccedil;a a primeira venda</h2>
+<p>Tire boas fotos com a lumin&aacute;ria <strong>acesa no escuro</strong> (&eacute; isso que encanta), crie um an&uacute;ncio na Shopee ou no Mercado Livre e divulgue no Instagram e no status do WhatsApp. Aprofunde tudo no guia <strong>Como Vender Online</strong>.</p>
+
+<h2>Erros comuns (e como evitar)</h2>
+<ul>
+<li><strong>Pe&ccedil;a deformando:</strong> voc&ecirc; usou l&acirc;mpada quente. Troque por LED.</li>
+<li><strong>Primeira camada n&atilde;o gruda:</strong> mesa desnivelada ou suja. Nivele e limpe com &aacute;lcool.</li>
+<li><strong>Luz vaza muito forte:</strong> aumente as paredes pra 3 e use filamento branco fosco.</li>
+<li><strong>Pre&ccedil;o baixo demais:</strong> voc&ecirc; vende trabalho e design, n&atilde;o s&oacute; pl&aacute;stico.</li>
+</ul>
+
+<h2>Seu pr&oacute;ximo passo</h2>
+<p>Imprima 3 a 5 modelos diferentes pra formar um mini cat&aacute;logo, fotografe todos acesos e monte sua primeira vitrine online. Com o cat&aacute;logo pronto, &eacute; s&oacute; escalar.</p>
+` },
+  tut_vender: { title: "Como Vender Online", html: `
+<p class="lead">Ter os arquivos &eacute; metade do caminho. A outra metade &eacute; fazer as pessoas verem, desejarem e comprarem. Este guia mostra onde vender, como anunciar e como transformar visitas em vendas.</p>
+
+<h2>1. Onde vender</h2>
+<ul>
+<li><strong>Shopee:</strong> &oacute;tima pra come&ccedil;ar. Muito tr&aacute;fego, p&uacute;blico que compra por impulso e frete subsidiado. Ideal pra pe&ccedil;as de R$ 30 a R$ 120.</li>
+<li><strong>Mercado Livre:</strong> ticket mais alto e comprador mais decidido. Bom pra lumin&aacute;rias maiores e kits.</li>
+<li><strong>Instagram + WhatsApp:</strong> sua vitrine pr&oacute;pria, sem taxas. Perfeito pra vender por encomenda e criar clientes recorrentes.</li>
+<li><strong>Elo7:</strong> p&uacute;blico que busca decora&ccedil;&atilde;o e pe&ccedil;as personalizadas, disposto a pagar mais.</li>
+</ul>
+<div class="tip">Comece por <strong>um</strong> canal, aprenda a vender bem nele e s&oacute; depois expanda. Espalhar em tudo de uma vez costuma dispersar a energia.</div>
+
+<h2>2. Fotos que vendem</h2>
+<p>Em decora&ccedil;&atilde;o, a foto &eacute; 80% da venda:</p>
+<ul>
+<li><strong>Foto principal:</strong> a lumin&aacute;ria acesa, num ambiente aconchegante e com o resto da cena mais escuro. &Eacute; a imagem que faz a pessoa parar de rolar a tela.</li>
+<li><strong>Fotos de apoio:</strong> a pe&ccedil;a apagada (mostra o design), em cima de um m&oacute;vel real (d&aacute; escala) e um detalhe de perto do acabamento.</li>
+<li>Luz natural pra foto apagada e ambiente escuro pra foto acesa.</li>
+<li>Fundo limpo: um pano, uma mesa de madeira ou uma parede neutra j&aacute; resolvem.</li>
+</ul>
+
+<h2>3. T&iacute;tulo e descri&ccedil;&atilde;o</h2>
+<p>O t&iacute;tulo faz seu an&uacute;ncio ser encontrado. Monte assim: <strong>Produto + estilo + uso + diferencial</strong>.</p>
+<ul>
+<li>Exemplo: "Lumin&aacute;ria Abajur Espiral Moderna Decora&ccedil;&atilde;o Quarto Sala Mesa LED".</li>
+<li>Use as palavras que o cliente digita: abajur, lumin&aacute;ria de mesa, decora&ccedil;&atilde;o, presente, moderna, minimalista.</li>
+</ul>
+<p>Na descri&ccedil;&atilde;o, fale dos benef&iacute;cios e tire d&uacute;vidas: material, tamanho, se acompanha l&acirc;mpada, tipo de luz, cuidado (usar LED), prazo de produ&ccedil;&atilde;o e envio. Termine com uma chamada: "Garanta a sua e transforme seu ambiente".</p>
+
+<h2>4. Pre&ccedil;o e frete</h2>
+<ul>
+<li>Pesquise an&uacute;ncios parecidos e posicione seu pre&ccedil;o na m&eacute;dia &mdash; nem o mais barato (parece fr&aacute;gil), nem fora da curva.</li>
+<li>Embuta parte do custo no pre&ccedil;o e ofere&ccedil;a "frete gr&aacute;tis" quando poss&iacute;vel: converte muito mais.</li>
+<li>Crie combos (par de lumin&aacute;rias, kit de 3 vasos) pra aumentar o valor de cada pedido.</li>
+</ul>
+
+<h2>5. Acelere com an&uacute;ncios</h2>
+<p>Shopee e Mercado Livre t&ecirc;m an&uacute;ncios patrocinados baratos. Suba seus 2 ou 3 melhores produtos, invista um valor pequeno por dia e deixe rodar. Me&ccedil;a quais an&uacute;ncios trazem venda e coloque mais verba neles.</p>
+<div class="tip">No Instagram, poste v&iacute;deos curtos da pe&ccedil;a sendo impressa e acendendo. Esse tipo de v&iacute;deo "satisfat&oacute;rio" viraliza e traz clientes sem custo.</div>
+
+<h2>6. Atendimento e reputa&ccedil;&atilde;o</h2>
+<ul>
+<li>Responda r&aacute;pido &mdash; a primeira resposta em minutos aumenta muito a chance de venda.</li>
+<li>Embale com capricho (pl&aacute;stico bolha, caixa firme). Pe&ccedil;a que chega quebrada vira nota baixa.</li>
+<li>Pe&ccedil;a avalia&ccedil;&atilde;o depois da entrega. Reputa&ccedil;&atilde;o alta empurra seus an&uacute;ncios pro topo.</li>
+</ul>
+
+<h2>7. Como escalar</h2>
+<ul>
+<li>Descubra seus 2 ou 3 campe&otilde;es de venda e foque neles.</li>
+<li>Imprima em lotes pra ter estoque pronto.</li>
+<li>Reinvista o lucro em mais filamento e, quando fizer sentido, numa segunda impressora.</li>
+<li>Crie uma marca simples (nome + logo). Marca vende mais caro.</li>
+</ul>
+
+<h2>Resumo</h2>
+<p>Escolha um canal, capriche nas fotos com a pe&ccedil;a acesa, escreva t&iacute;tulos que aparecem na busca, precifique pelo valor e cuide da reputa&ccedil;&atilde;o. Fa&ccedil;a isso de forma constante e as vendas viram rotina.</p>
+` },
+  tut_filamentos: { title: "Guia de Filamentos", html: `
+<p class="lead">O filamento certo muda tudo: acabamento, resist&ecirc;ncia, como a luz atravessa a pe&ccedil;a e a durabilidade da lumin&aacute;ria. Este guia mostra o que usar em cada situa&ccedil;&atilde;o.</p>
+
+<h2>Os principais materiais</h2>
+<h3>PLA &mdash; o melhor pra come&ccedil;ar</h3>
+<p>F&aacute;cil de imprimir, barato, pouco cheiro e &oacute;timo acabamento. &Eacute; o material ideal pra maioria das lumin&aacute;rias. &Uacute;nico ponto de aten&ccedil;&atilde;o: amolece com calor, ent&atilde;o <strong>s&oacute; use com l&acirc;mpada LED</strong>.</p>
+<h3>PLA Silk &mdash; brilho premium</h3>
+<p>Vers&atilde;o do PLA com efeito acetinado/met&aacute;lico. Deixa a pe&ccedil;a com cara de produto caro e imprime quase igual ao PLA comum. Excelente pra pe&ccedil;as "de vitrine".</p>
+<h3>PETG &mdash; mais resistente ao calor</h3>
+<p>Aguenta mais temperatura e &eacute; mais resistente a impactos. Boa escolha se a lumin&aacute;ria ficar perto de fonte de calor ou em uso intenso.</p>
+<h3>ABS &mdash; resistente, por&eacute;m trabalhoso</h3>
+<p>Muito resistente ao calor, mas solta cheiro forte, empena f&aacute;cil e pede impressora fechada. S&oacute; recomendo com um motivo espec&iacute;fico.</p>
+<h3>Filamentos especiais</h3>
+<ul>
+<li><strong>Madeira (wood fill):</strong> textura e apar&ecirc;ncia de madeira. Lindo em abajures r&uacute;sticos.</li>
+<li><strong>Transl&uacute;cido/natural:</strong> espalha a luz de forma suave e uniforme.</li>
+<li><strong>Fosco (matte):</strong> esconde as camadas e d&aacute; acabamento sofisticado.</li>
+</ul>
+
+<h2>Qual usar em lumin&aacute;rias</h2>
+<ul>
+<li><strong>Uso decorativo normal (com LED):</strong> PLA branco, bege ou fosco. Simples, barato e bonito.</li>
+<li><strong>Pe&ccedil;a pra impressionar:</strong> PLA Silk ou fosco.</li>
+<li><strong>Luz mais suave e difusa:</strong> filamento natural/transl&uacute;cido e 2&ndash;3 paredes.</li>
+<li><strong>Ambiente quente ou uso pesado:</strong> PETG.</li>
+</ul>
+<div class="tip"><strong>Regra de ouro:</strong> sempre l&acirc;mpada de LED (fria). Com LED, at&eacute; o PLA dura anos. Com l&acirc;mpada quente, qualquer material sofre.</div>
+
+<h2>Temperaturas de refer&ecirc;ncia</h2>
+<p>Comece sempre pelo valor da etiqueta do fabricante. Como ponto de partida:</p>
+<ul>
+<li><strong>PLA:</strong> bico 200&ndash;215 &deg;C &middot; mesa 50&ndash;60 &deg;C</li>
+<li><strong>PLA Silk:</strong> bico 210&ndash;230 &deg;C &middot; mesa 50&ndash;60 &deg;C</li>
+<li><strong>PETG:</strong> bico 230&ndash;250 &deg;C &middot; mesa 70&ndash;80 &deg;C</li>
+<li><strong>ABS:</strong> bico 240&ndash;260 &deg;C &middot; mesa 90&ndash;100 &deg;C (impressora fechada)</li>
+</ul>
+
+<h2>Ades&atilde;o &agrave; mesa</h2>
+<ul>
+<li>Mesa limpa (&aacute;lcool isoprop&iacute;lico) e bem nivelada resolvem 90% dos casos.</li>
+<li>Primeira camada mais devagar e um pouco mais "esmagada".</li>
+<li>Se precisar, use "brim" (borda) no fatiador pra segurar melhor.</li>
+</ul>
+
+<h2>Cor e efeito da luz</h2>
+<ul>
+<li><strong>Branco/natural:</strong> luz mais clara e forte, espalha bem.</li>
+<li><strong>Bege/&acirc;mbar:</strong> luz quente e aconchegante &mdash; a preferida em decora&ccedil;&atilde;o.</li>
+<li><strong>Cores escuras:</strong> deixam passar pouca luz; melhores pra valorizar a silhueta.</li>
+</ul>
+
+<h2>Problemas comuns e solu&ccedil;&atilde;o r&aacute;pida</h2>
+<ul>
+<li><strong>Fios/cabelos:</strong> baixe um pouco a temperatura do bico e ajuste a retra&ccedil;&atilde;o; seque o filamento se estiver &uacute;mido.</li>
+<li><strong>Camadas separando:</strong> aumente levemente a temperatura e reduza a ventoinha.</li>
+<li><strong>Pe&ccedil;a fr&aacute;gil:</strong> aumente as paredes pra 3.</li>
+<li><strong>Acabamento irregular:</strong> reduza a velocidade pra 40&ndash;50 mm/s.</li>
+</ul>
+
+<h2>Resumo</h2>
+<p>Pra 9 em cada 10 lumin&aacute;rias: PLA (comum, fosco ou silk) + l&acirc;mpada LED. Guarde PETG pra quando precisar de mais resist&ecirc;ncia ao calor. Filamento seco, mesa limpa e paredes suficientes garantem o resto.</p>
+` }
+};
+
+GUIDES.calculadora = { title: "Calculadora de Precifica\u00e7\u00e3o", html: `
+<p class="lead">Preencha os campos abaixo com os custos da sua pe&ccedil;a. O c&aacute;lculo &eacute; feito automaticamente conforme voc&ecirc; digita.</p>
+
+<div class="calc-grid">
+  <div class="calc-field">
+    <label>Filamento utilizado (g)</label>
+    <input type="number" id="calcFilamentoG" min="0" step="any" placeholder="Ex.: 80" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Preço do filamento (R$/kg)</label>
+    <input type="number" id="calcFilamentoPrecoKg" min="0" step="any" placeholder="Ex.: 120" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Tempo de impressão (horas)</label>
+    <input type="number" id="calcHoras" min="0" step="any" placeholder="Ex.: 5" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Valor da sua hora (R$/h)</label>
+    <input type="number" id="calcValorHora" min="0" step="any" placeholder="Ex.: 3" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Potência da impressora (W)</label>
+    <input type="number" id="calcPotenciaW" min="0" step="any" placeholder="Ex.: 150" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Preço da energia (R$/kWh)</label>
+    <input type="number" id="calcPrecoKwh" min="0" step="any" placeholder="Ex.: 0,85" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Desgaste da impressora (R$)</label>
+    <input type="number" id="calcDesgaste" min="0" step="any" placeholder="Ex.: 1,50" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Acabamento (R$)</label>
+    <input type="number" id="calcAcabamento" min="0" step="any" placeholder="Ex.: 2,00" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Pintura (tinta, primer, verniz) (R$)</label>
+    <input type="number" id="calcPintura" min="0" step="any" placeholder="Ex.: 0,00" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Embalagem (R$)</label>
+    <input type="number" id="calcEmbalagem" min="0" step="any" placeholder="Ex.: 1,70" oninput="calcPrecificacao()">
+  </div>
+  <div class="calc-field">
+    <label>Margem de lucro desejada (%)</label>
+    <input type="number" id="calcMargem" min="0" step="any" placeholder="Ex.: 100" oninput="calcPrecificacao()">
+  </div>
+</div>
+
+<button type="button" class="calc-btn" onclick="calcPrecificacao()">Calcular</button>
+
+<div class="calc-result">
+  <div class="calc-row"><span>Filamento</span><span id="calcOutFilamento">R$ 0,00</span></div>
+  <div class="calc-row"><span>Tempo de impressão</span><span id="calcOutTempo">R$ 0,00</span></div>
+  <div class="calc-row"><span>Energia elétrica</span><span id="calcOutEnergia">R$ 0,00</span></div>
+  <div class="calc-row"><span>Desgaste da impressora</span><span id="calcOutDesgaste">R$ 0,00</span></div>
+  <div class="calc-row"><span>Acabamento</span><span id="calcOutAcabamento">R$ 0,00</span></div>
+  <div class="calc-row"><span>Pintura</span><span id="calcOutPintura">R$ 0,00</span></div>
+  <div class="calc-row"><span>Embalagem</span><span id="calcOutEmbalagem">R$ 0,00</span></div>
+  <div class="calc-total-row"><span>Custo total</span><span id="calcOutCustoTotal">R$ 0,00</span></div>
+  <div class="calc-total-row"><span>Valor do lucro</span><span id="calcOutLucro">R$ 0,00</span></div>
+  <div class="calc-final"><span>Preço final sugerido</span><span id="calcOutFinal">R$ 0,00</span></div>
+</div>
+
+<div class="tip" style="margin-top:18px"><strong>Como cada valor é calculado:</strong> filamento = (gramas ÷ 1000) × preço do kg &middot; tempo de impressão = horas × valor da sua hora &middot; energia = (potência ÷ 1000) × horas × preço do kWh &middot; os demais campos (desgaste, acabamento, pintura, embalagem) entram direto como valor em reais. O preço final é o custo total mais a margem de lucro escolhida.</div>
+` };
+GUIDES.checklist_sem_erro = { title: "Checklist de Impress\u00e3o Sem Erro", html: `
+<p class="lead">Uma impress&atilde;o 3D de qualidade come&ccedil;a muito antes de apertar o bot&atilde;o de iniciar. Pequenos detalhes &mdash; nivelamento da mesa, limpeza da superf&iacute;cie, escolha certa do filamento e confer&ecirc;ncia das configura&ccedil;&otilde;es &mdash; evitam desperd&iacute;cio de material, falhas na impress&atilde;o e horas perdidas.</p>
+<div class="tip"><strong>Lembre-se:</strong> a maioria das falhas de impress&atilde;o pode ser evitada com poucos minutos de confer&ecirc;ncia antes de iniciar o processo. Use este checklist sempre antes de come&ccedil;ar uma nova impress&atilde;o &mdash; basta seguir cada etapa conforme for verificando.</p></div>
+
+<h2>1. Checklist &mdash; antes de imprimir</h2>
+<p>Reserve de 3 a 5 minutos para revisar tudo. Isso pode economizar horas de impress&atilde;o.</p>
+
+<h3>Impressora</h3>
+<ul>
+<li>☐ Mesa nivelada</li>
+<li>☐ Bico limpo</li>
+<li>☐ Correias ajustadas</li>
+<li>☐ Ventoinhas funcionando</li>
+<li>☐ Movimento dos eixos livre</li>
+<li>☐ Estrutura da impressora firme</li>
+<li>☐ Display e conex&otilde;es OK</li>
+</ul>
+
+<h3>Filamento</h3>
+<ul>
+<li>☐ Filamento seco</li>
+<li>☐ Material correto (PLA, PETG etc.)</li>
+<li>☐ Cor conferida</li>
+<li>☐ Sem n&oacute;s na bobina</li>
+<li>☐ Bobina presa corretamente</li>
+<li>☐ Filamento flui livremente</li>
+</ul>
+
+<h3>Arquivo</h3>
+<ul>
+<li>☐ STL correto</li>
+<li>☐ Escala conferida (100%)</li>
+<li>☐ Orienta&ccedil;&atilde;o correta</li>
+<li>☐ Suportes configurados</li>
+<li>☐ Fatiamento revisado</li>
+<li>☐ Pr&eacute;-visualiza&ccedil;&atilde;o OK no slicer</li>
+<li>☐ Nome do arquivo conferido</li>
+</ul>
+
+<h3>Configura&ccedil;&otilde;es</h3>
+<ul>
+<li>☐ Temperatura do bico configurada</li>
+<li>☐ Temperatura da mesa configurada</li>
+<li>☐ Velocidade de impress&atilde;o</li>
+<li>☐ Altura da camada</li>
+<li>☐ Infill (preenchimento)</li>
+<li>☐ Ades&atilde;o &agrave; mesa (configurada)</li>
+<li>☐ Retra&ccedil;&atilde;o configurada</li>
+<li>☐ Resfriamento (fans) ajustado</li>
+</ul>
+
+<h2>2. Checklist &mdash; durante a impress&atilde;o</h2>
+<p>Acompanhar os primeiros minutos e o andamento da impress&atilde;o evita falhas grandes e desperd&iacute;cio de material. Fa&ccedil;a verifica&ccedil;&otilde;es r&aacute;pidas e peri&oacute;dicas durante todo o processo.</p>
+
+<h3>Primeira camada (a etapa mais importante)</h3>
+<ul>
+<li>☐ Boa ader&ecirc;ncia na mesa</li>
+<li>☐ Espessura uniforme</li>
+<li>☐ Sem falhas ou buracos</li>
+<li>☐ Sem deslocamento ou arraste</li>
+<li>☐ Primeira camada aprovada antes de continuar</li>
+</ul>
+<div class="tip"><strong>Dica de ouro:</strong> a maioria dos problemas que acontecem no final da impress&atilde;o come&ccedil;am nos primeiros minutos. Se a primeira camada n&atilde;o estiver perfeita, pause e corrija antes que o problema se propague.</div>
+
+<h3>Durante a impress&atilde;o</h3>
+<ul>
+<li>☐ Filamento saindo normalmente</li>
+<li>☐ Sem entupimentos ou falhas na extrus&atilde;o</li>
+<li>☐ Sem excesso de fios ("spaghetti")</li>
+<li>☐ Camadas alinhadas e sem desvio</li>
+<li>☐ Temperatura est&aacute;vel do bico e da mesa</li>
+<li>☐ Sem ru&iacute;dos incomuns</li>
+<li>☐ Ventoinhas funcionando corretamente</li>
+</ul>
+
+<h3>Sinais de alerta</h3>
+<ul>
+<li>Filamento n&atilde;o sai ou sai com falhas</li>
+<li>Camadas se deslocam ou ficam tortas</li>
+<li>Pe&ccedil;a se solta da mesa</li>
+<li>Fios em excesso</li>
+<li>Mudan&ccedil;a brusca na temperatura</li>
+<li>Ru&iacute;dos de batida ou rangido</li>
+</ul>
+
+<h2>3. Checklist &mdash; ap&oacute;s a impress&atilde;o</h2>
+<p>Ap&oacute;s a impress&atilde;o, alguns cuidados garantem que a pe&ccedil;a fique perfeita e pronta para acabamento e entrega.</p>
+
+<h3>Pe&ccedil;a impressa</h3>
+<ul>
+<li>☐ Impress&atilde;o conclu&iacute;da com sucesso</li>
+<li>☐ Sem trincas, rachaduras ou falhas vis&iacute;veis</li>
+<li>☐ Dimens&otilde;es conferidas</li>
+<li>☐ Suportes removidos com cuidado</li>
+<li>☐ Superf&iacute;cie limpa e livre de rebarbas</li>
+</ul>
+
+<h3>Acabamento inicial</h3>
+<ul>
+<li>☐ Lixamento inicial realizado</li>
+<li>☐ Limpeza do p&oacute; e res&iacute;duos</li>
+<li>☐ Inspe&ccedil;&atilde;o final da pe&ccedil;a</li>
+<li>☐ Pronta para pintura e acabamento</li>
+<li>☐ Pronta para embalagem e entrega</li>
+</ul>
+
+<h3>Problemas comuns ap&oacute;s a impress&atilde;o</h3>
+<ul>
+<li>Camadas desalinhadas</li>
+<li>Linhas vis&iacute;veis ou excesso de rebarbas</li>
+<li>Pequenas falhas ou buracos</li>
+<li>Deforma&ccedil;&otilde;es por resfriamento</li>
+<li>Pe&ccedil;a fr&aacute;gil nas partes finas</li>
+</ul>
+<div class="tip"><strong>Dica profissional:</strong> anote o problema e ajuste as configura&ccedil;&otilde;es para a pr&oacute;xima impress&atilde;o. Sempre manipule a pe&ccedil;a com cuidado, principalmente enquanto ainda est&aacute; mais fr&aacute;gil.</div>
+
+<h2>4. Checklist mestre &mdash; vis&atilde;o completa</h2>
+<p>Use esta tabela como resumo r&aacute;pido de todo o processo. Marque cada etapa conforme for concluindo.</p>
+<table>
+<tr><th>Etapa</th><th>Antes</th><th>Durante</th><th>Ap&oacute;s</th></tr>
+<tr><td>Impressora / primeira camada</td><td>Revisada e em perfeito estado</td><td>Boa ader&ecirc;ncia, sem falhas</td><td>&mdash;</td></tr>
+<tr><td>Filamento</td><td>Correto, seco e pronto</td><td>Saindo normalmente</td><td>&mdash;</td></tr>
+<tr><td>Arquivo / STL</td><td>Escala e orienta&ccedil;&atilde;o conferidas</td><td>&mdash;</td><td>Dimens&otilde;es conferidas</td></tr>
+<tr><td>Configura&ccedil;&otilde;es</td><td>Fatiamento revisado</td><td>Temperaturas est&aacute;veis</td><td>&mdash;</td></tr>
+<tr><td>Qualidade da pe&ccedil;a</td><td>&mdash;</td><td>Sem deslocamento de camadas</td><td>Sem trincas ou deforma&ccedil;&otilde;es</td></tr>
+<tr><td>Finaliza&ccedil;&atilde;o</td><td>&mdash;</td><td>&mdash;</td><td>Limpa, lixada e pronta para acabamento</td></tr>
+</table>
+
+<h2>Por que usar este checklist?</h2>
+<ul>
+<li><strong>Reduz falhas e retrabalho.</strong></li>
+<li><strong>Economiza tempo e material.</strong></li>
+<li><strong>Aumenta a qualidade</strong> das suas pe&ccedil;as.</li>
+<li><strong>Traz mais confian&ccedil;a</strong> para suas entregas.</li>
+<li><strong>Torna seu processo mais profissional</strong> e eficiente.</li>
+</ul>
+
+<h2>Dica final</h2>
+<p>A consist&ecirc;ncia &eacute; o que separa amadores de profissionais. Crie o h&aacute;bito de seguir este checklist em toda impress&atilde;o. Com o tempo, ele se tornar&aacute; autom&aacute;tico e os resultados aparecer&atilde;o em cada pe&ccedil;a que voc&ecirc; produzir.</p>
+<p style="text-align:right;font-style:italic;color:var(--muted)">"A excel&ecirc;ncia n&atilde;o &eacute; um ato, mas um h&aacute;bito." &mdash; Arist&oacute;teles</p>
+` };
+GUIDES.guia_acabamento = { title: "Acabamento, Pintura e P\u00f3s-produ\u00e7\u00e3o", html: `
+<p class="lead">Um bom acabamento n&atilde;o apenas melhora a apar&ecirc;ncia, mas tamb&eacute;m aumenta o valor e a durabilidade das suas impress&otilde;es. Este guia leva sua pe&ccedil;a da impress&atilde;o bruta ao resultado profissional: limpeza, lixamento, primer, pintura, verniz e base.</p>
+<div class="tip"><strong>O caminho completo:</strong> Impress&atilde;o &rarr; Limpeza &rarr; Lixamento &rarr; Primer &rarr; Pintura &rarr; Verniz &rarr; Base.</div>
+
+<h2>1. Ferramentas e materiais essenciais</h2>
+<p>Ter as ferramentas certas facilita o processo e garante um resultado profissional.</p>
+<ul>
+<li><strong>Lixas</strong> (gr&atilde;os 120, 220, 400 e 600) &mdash; para cada etapa do processo.</li>
+<li><strong>Alicate de corte</strong> &mdash; para remo&ccedil;&atilde;o precisa dos suportes e rebarbas.</li>
+<li><strong>Estilete</strong> &mdash; ideal para remover marcas e suportes em &aacute;reas delicadas.</li>
+<li><strong>Massa para acabamento</strong> &mdash; corrige pequenas imperfei&ccedil;&otilde;es antes do primer.</li>
+<li><strong>Primer</strong> &mdash; prepara a superf&iacute;cie, melhora a ader&ecirc;ncia da tinta e revela defeitos.</li>
+<li><strong>Tintas acr&iacute;licas</strong> &mdash; cores variadas para dar vida e realismo &agrave;s pe&ccedil;as.</li>
+<li><strong>Pinc&eacute;is</strong> de diferentes tamanhos &mdash; para detalhes e &aacute;reas grandes.</li>
+<li><strong>Aer&oacute;grafo (opcional)</strong> &mdash; garante camadas finas, suaves e acabamento superior.</li>
+<li><strong>Verniz fosco</strong> &mdash; protege a pintura e elimina o brilho indesejado.</li>
+<li><strong>Verniz brilhante</strong> &mdash; realça cores, d&aacute; brilho e aumenta a prote&ccedil;&atilde;o.</li>
+</ul>
+<div class="tip"><strong>Dica de ouro:</strong> invista em bons materiais. Eles duram mais, entregam melhores resultados e tornam todo o processo mais prazeroso. Organize seu espa&ccedil;o: deixe tudo &agrave; m&atilde;o e mantenha o ambiente limpo e bem ventilado.</div>
+
+<h2>2. Remoção dos suportes e limpeza</h2>
+<p>A primeira etapa do acabamento &eacute; remover os suportes corretamente e limpar a pe&ccedil;a para deix&aacute;-la pronta para o lixamento.</p>
+<h3>Como remover sem danificar</h3>
+<ul>
+<li>Utilize um alicate de corte para remover os suportes mais grossos.</li>
+<li>Corte sempre pr&oacute;ximo &agrave; pe&ccedil;a, mas sem encostar nela.</li>
+<li>Para suportes finos e &aacute;reas delicadas, use um estilete.</li>
+<li>Evite for&ccedil;ar ou torcer os suportes.</li>
+<li>Trabalhe com calma e boa ilumina&ccedil;&atilde;o.</li>
+</ul>
+<h3>Onde ter mais cuidado</h3>
+<p>Dedos e m&atilde;os, rosto e cabelos, armas finas, capas e tecidos, pontas e espinhos &mdash; s&atilde;o as &aacute;reas mais fr&aacute;geis e onde detalhes se perdem com mais facilidade.</p>
+<h3>Como eliminar rebarbas</h3>
+<ul>
+<li>Use o estilete para remover rebarbas maiores com leveza.</li>
+<li>Lixe suavemente as &aacute;reas cortadas para nivelar a superf&iacute;cie.</li>
+<li>Passe um pincel macio para retirar o p&oacute; e res&iacute;duos.</li>
+<li>Verifique a pe&ccedil;a em boa luz para identificar imperfei&ccedil;&otilde;es.</li>
+</ul>
+<div class="tip"><strong>Aten&ccedil;&atilde;o:</strong> remover os suportes da forma errada pode danificar detalhes importantes e comprometer o resultado final. Comece pelos suportes maiores e v&aacute; avan&ccedil;ando para os menores &mdash; isso reduz o risco de marcas e quebras.</div>
+
+<h2>3. Lixamento perfeito</h2>
+<p>O lixamento &eacute; essencial para deixar a superf&iacute;cie lisa, remover imperfei&ccedil;&otilde;es e preparar a pe&ccedil;a para o primer e a pintura. Cada gr&atilde;o tem uma fun&ccedil;&atilde;o espec&iacute;fica &mdash; utilize na ordem correta.</p>
+<table>
+<tr><th>Grão</th><th>Função</th><th>Quando usar</th></tr>
+<tr><td>120</td><td>Correções iniciais</td><td>Remover marcas de suportes grossos, rebarbas e imperfeições maiores</td></tr>
+<tr><td>220</td><td>Nivelamento da superfície</td><td>Suavizar riscos deixados pela lixa 120 e nivelar as áreas corrigidas</td></tr>
+<tr><td>400</td><td>Acabamento fino</td><td>Deixar a superfície lisa e sem riscos visíveis, preparando para o primer</td></tr>
+<tr><td>600</td><td>Preparação final</td><td>Toque ultra liso, ideal antes da aplicação do primer</td></tr>
+</table>
+<ul>
+<li>Lixe sempre em movimentos suaves e uniformes.</li>
+<li>N&atilde;o pule etapas &mdash; cada lixa prepara a pr&oacute;xima.</li>
+<li>Mantenha a pe&ccedil;a limpa entre as trocas de lixa.</li>
+<li>Use lixas d'&aacute;gua para um acabamento ainda melhor.</li>
+<li>Preste aten&ccedil;&atilde;o em detalhes como dobras, texturas e cantos.</li>
+</ul>
+<div class="tip"><strong>Atenção:</strong> lixar com força excessiva pode apagar detalhes importantes da peça. Tenha paciência e trabalhe com leveza — uma peça bem lixada recebe melhor o primer, a tinta e o verniz.</div>
+
+<h2>4. Primer: a base de um acabamento profissional</h2>
+<p>O primer prepara a pe&ccedil;a para receber a pintura, melhora a ader&ecirc;ncia e revela imperfei&ccedil;&otilde;es que podem ser corrigidas antes da pintura final.</p>
+<h3>Quando usar</h3>
+<p>Use o primer ap&oacute;s o lixamento e limpeza da pe&ccedil;a, e antes da pintura. Ele melhora a ader&ecirc;ncia da tinta, uniformiza a cor, revela imperfei&ccedil;&otilde;es e prolonga a durabilidade da pintura.</p>
+<h3>Quantas demãos e tempo de secagem</h3>
+<p>O ideal &eacute; aplicar de 2 a 3 dem&atilde;os finas, respeitando o tempo de secagem entre elas (entre 15 e 30 minutos por dem&atilde;o; secagem completa de 2 a 4 horas).</p>
+<h3>Tipos de primer</h3>
+<ul>
+<li><strong>Cinza</strong> &mdash; ideal para cores claras e vibrantes.</li>
+<li><strong>Branco</strong> &mdash; ideal para cores claras e amarelas.</li>
+<li><strong>Preto</strong> &mdash; ideal para cores escuras e met&aacute;licas.</li>
+</ul>
+<h3>Erros comuns ao usar primer</h3>
+<ul>
+<li>Excesso de primer &mdash; camada muito grossa pode apagar detalhes e causar escorridos.</li>
+<li>N&atilde;o respeitar a secagem &mdash; pintar antes da secagem pode causar bolhas e descascamento.</li>
+<li>Local com poeira ou vento &mdash; pode causar textura ruim e sujeira na pe&ccedil;a.</li>
+<li>Primer inadequado &mdash; use primer espec&iacute;fico para pl&aacute;sticos ou resina.</li>
+<li>Exposi&ccedil;&atilde;o ao sol &mdash; evite secar no sol direto, isso prejudica a ader&ecirc;ncia.</li>
+</ul>
+<div class="tip"><strong>Dica:</strong> agite bem a lata por 1 minuto, aplique em local ventilado, mantenha a lata a 20-30 cm da peça e use camadas finas e uniformes. Um bom primer &eacute; como a funda&ccedil;&atilde;o de uma casa: se for bem feito, o resultado final ser&aacute; muito mais bonito, dur&aacute;vel e profissional. N&atilde;o pule esta etapa.</div>
+
+<h2>5. Pintura: técnicas para dar vida à peça</h2>
+<p>A pintura transforma sua impress&atilde;o 3D em uma verdadeira obra de arte. Com t&eacute;cnicas simples e camadas bem aplicadas, voc&ecirc; pode criar pe&ccedil;as incr&iacute;veis mesmo sendo iniciante.</p>
+<h3>Técnicas essenciais</h3>
+<ul>
+<li><strong>1. Base</strong> &mdash; aplique a cor principal em toda a &aacute;rea que deseja pintar. Use tintas diluidas e camadas finas.</li>
+<li><strong>2. Sombras</strong> &mdash; aplique uma cor mais escura nas &aacute;reas de sombra para criar profundidade e realismo.</li>
+<li><strong>3. Luzes</strong> &mdash; use uma cor mais clara para iluminar as &aacute;reas de destaque, como bordas e sali&ecirc;ncias.</li>
+<li><strong>4. Pincel seco</strong> &mdash; passe o pincel quase seco na tinta e arraste levemente para realçar texturas e detalhes.</li>
+<li><strong>5. Lavagem (wash)</strong> &mdash; aplique um wash (tinta mais rala e escura) nas reentr&acirc;ncias para dar profundidade e realismo.</li>
+<li><strong>6. Efeito envelhecido</strong> &mdash; use t&eacute;cnicas como batidinhas com esponja ou pincel seco para criar desgaste e idade.</li>
+</ul>
+<p><strong>Ordem recomendada:</strong> Primer &rarr; Base &rarr; Sombras &rarr; Luzes &rarr; Lavagem &rarr; Envelhecido &rarr; Verniz.</p>
+<div class="tip"><strong>Dicas importantes:</strong> dilua sempre a tinta para evitar marcas; aplique v&aacute;rias camadas finas em vez de uma grossa; tenha paci&ecirc;ncia e deixe cada camada secar bem; estude refer&ecirc;ncias e observe a luz e sombra no mundo real; pratique sempre.</div>
+
+<h2>6. Verniz e proteção</h2>
+<p>O verniz n&atilde;o &eacute; apenas est&eacute;tica: ele protege a pe&ccedil;a contra desgaste, poeira, umidade e arranh&otilde;es, garantindo durabilidade e um acabamento profissional.</p>
+<h3>Tipos de verniz</h3>
+<ul>
+<li><strong>Fosco</strong> &mdash; elimina o brilho e d&aacute; um acabamento suave e elegante. Ideal para pe&ccedil;as realistas, fantasia e miniaturas. Use para esconder imperfei&ccedil;&otilde;es e evitar reflexos.</li>
+<li><strong>Semi-brilho</strong> &mdash; oferece leve brilho e realça as cores sem exageros. Bom para destacar cores mantendo um brilho discreto.</li>
+<li><strong>Brilhante</strong> &mdash; proporciona brilho intenso e vibrante, destacando cores e detalhes. Ideal para pe&ccedil;as decorativas e efeitos especiais (efeitos molhados, esmaltes).</li>
+</ul>
+<h3>Como aplicar</h3>
+<ol>
+<li>Agite bem a lata por 1 a 2 minutos.</li>
+<li>Aplique em local ventilado e sobre superf&iacute;cie limpa.</li>
+<li>Mantenha a lata a 20-30 cm da pe&ccedil;a.</li>
+<li>Aplique camadas leves e uniformes, evitando excesso.</li>
+<li>Aguarde o tempo de secagem entre as dem&atilde;os.</li>
+</ol>
+<div class="tip"><strong>Dicas importantes:</strong> sempre teste em uma pe&ccedil;a de descarte antes; n&atilde;o aplique verniz com a pe&ccedil;a muito fria ou &uacute;mida; evite tocar na pe&ccedil;a durante a secagem; para melhor resultado, aplique de 1 a 3 dem&atilde;os; armazene o verniz em local fresco e seco.</div>
+
+<h2>7. Base e ambientação</h2>
+<p>A base &eacute; o cen&aacute;rio que conta a hist&oacute;ria do seu personagem. Ela d&aacute; firmeza, realismo e transforma uma pintura bonita em uma obra completa.</p>
+<h3>Passo a passo</h3>
+<ol>
+<li><strong>Planeje o cen&aacute;rio</strong> &mdash; defina o tema e o ambiente da base, combinando com a hist&oacute;ria da pe&ccedil;a.</li>
+<li><strong>Texturize o solo</strong> &mdash; aplique massa texturizadora ou materiais naturais para criar o ch&atilde;o.</li>
+<li><strong>Adicione elementos</strong> &mdash; inclua pedras, madeira, destro&ccedil;os, cr&acirc;nios, plantas ou outros detalhes.</li>
+<li><strong>Pinte a base</strong> &mdash; pinte o solo e os elementos com cores naturais e harmoniosas.</li>
+<li><strong>Realce os detalhes</strong> &mdash; fa&ccedil;a luzes secas e lavagens para dar profundidade e contraste.</li>
+<li><strong>Coloque sua pe&ccedil;a</strong> &mdash; fixe a pe&ccedil;a com cola forte e fa&ccedil;a os retoques finais.</li>
+</ol>
+<h3>Ideias de temas</h3>
+<ul>
+<li><strong>Terreno rochoso</strong> &mdash; for&ccedil;a e resist&ecirc;ncia.</li>
+<li><strong>Ru&iacute;nas antigas</strong> &mdash; hist&oacute;ria e mist&eacute;rio.</li>
+<li><strong>Floresta</strong> &mdash; vida e conex&atilde;o.</li>
+<li><strong>Deserto</strong> &mdash; desafio e perseveran&ccedil;a.</li>
+<li><strong>Campo de batalha</strong> &mdash; coragem e vit&oacute;ria.</li>
+</ul>
+<h3>Erros comuns</h3>
+<ul>
+<li>Base muito carregada e poluída.</li>
+<li>Cores que não combinam com a miniatura.</li>
+<li>Materiais pesados que desequilibram a peça.</li>
+<li>Falta de contraste e destaque.</li>
+</ul>
+<div class="tip"><strong>Dica de ouro:</strong> menos &eacute; mais &mdash; n&atilde;o exagere nos elementos. Use materiais leves, crie pontos de interesse que direcionem o olhar para a pe&ccedil;a e seja intencional: cada detalhe deve ter um prop&oacute;sito.</div>
+
+<h2>8. Luzes e destaques</h2>
+<p>As luzes e os destaques s&atilde;o o que fazem sua miniatura se destacar e parecer real. &Eacute; neles que a luz bate primeiro, trazendo profundidade, volume e impacto visual.</p>
+<h3>Onde aplicar luzes</h3>
+<ol>
+<li><strong>Identifique a luz</strong> &mdash; imagine de onde vem a luz (geralmente de cima e da frente).</li>
+<li><strong>Realce as bordas</strong> &mdash; aplique luz nas bordas e quinas da armadura.</li>
+<li><strong>Volume nas superf&iacute;cies</strong> &mdash; fa&ccedil;a tra&ccedil;os finos nas &aacute;reas planas para dar volume.</li>
+<li><strong>Foco nos detalhes</strong> &mdash; destaque detalhes como s&iacute;mbolos, fivelas e entalhes.</li>
+<li><strong>Ponto de brilho</strong> &mdash; aplique um ponto bem claro no local mais exposto &agrave; luz.</li>
+</ol>
+<p>Exemplos por material: armadura prateada (luzes nas bordas, ombros e elmo), armadura dourada (luzes nas quinas, entalhes e relevos), couro (luzes nas dobras e &aacute;reas mais altas), tecido (luzes nas dobras e extremidades).</p>
+<div class="tip"><strong>Dicas importantes:</strong> use tintas claras e diluídas; aplique camadas finas; menos é mais &mdash; luz demais tira o realismo; se errar, volte com a cor base e refa&ccedil;a; sempre observe refer&ecirc;ncia de luz real.</div>
+
+<h2>Evolução da miniatura</h2>
+<p>Base &rarr; Sombras &rarr; Luzes &rarr; Detalhes &rarr; Finalizada. Confie no processo, seja paciente e constante: cada pincelada &eacute; um passo em dire&ccedil;&atilde;o a uma obra que valoriza o trabalho que voc&ecirc; colocou nela.</p>
+
+<h2>Resumo</h2>
+<p>O acabamento &eacute; o que transforma uma boa impress&atilde;o em uma obra extraordin&aacute;ria. Limpe, lixe com paci&ecirc;ncia, aplique o primer, pinte em camadas, proteja com verniz e finalize com uma base bem pensada. Capriche em cada etapa.</p>
+` };
+GUIDES.b1 = { title: "Produtos que Mais Vendem", html: `
+<p class="lead">Nem todo modelo vende igual. Este guia mostra quais pe&ccedil;as cat&oacute;licas t&ecirc;m mais sa&iacute;da e por qu&ecirc; &mdash; pra voc&ecirc; focar sua produ&ccedil;&atilde;o no que realmente d&aacute; retorno.</p>
+
+<h2>Os campe&otilde;es de venda</h2>
+<h3>1. Nossa Senhora Aparecida</h3>
+<p>A padroeira do Brasil &eacute; disparada a pe&ccedil;a mais procurada. Vende o ano inteiro e dispara em outubro. Ofere&ccedil;a em v&aacute;rios tamanhos: de mesa, de nicho e de parede.</p>
+<h3>2. Ter&ccedil;os e dezenas</h3>
+<p>Giro r&aacute;pido e baixo custo de filamento. &Oacute;timo pra vender em volume e como brinde que puxa outras compras.</p>
+<h3>3. Crucifixos e cruzes de parede</h3>
+<p>Presen&ccedil;a certa em qualquer casa cat&oacute;lica. Modelos de parede em relevo t&ecirc;m alto valor percebido e boa margem.</p>
+<h3>4. Sagrado Cora&ccedil;&atilde;o de Jesus e de Maria</h3>
+<p>Muito pedidos em devo&ccedil;&otilde;es e como presente. Ficam lindos pintados e vendem bem em pares.</p>
+<h3>5. Orat&oacute;rios e capelinhas</h3>
+<p>Pe&ccedil;a de maior valor agregado &mdash; o cliente paga mais por um orat&oacute;rio bem-acabado. Combine com uma imagem dentro e venda o conjunto.</p>
+<h3>6. Pres&eacute;pios</h3>
+<p>Sazonal, mas explode de novembro a dezembro. Prepare estoque com anteced&ecirc;ncia: &eacute; quando o ticket sobe.</p>
+<h3>7. Litofanias e quadros em relevo</h3>
+<p>O efeito da luz atravessando a pe&ccedil;a encanta na hora &mdash; excelente pra v&iacute;deo e pra vender pelo Instagram.</p>
+<h3>8. Chaveiros e medalhas (S&atilde;o Bento, etc.)</h3>
+<p>Baixo custo, alta sa&iacute;da. Perfeitos pra personaliza&ccedil;&atilde;o e lembrancinhas de eventos religiosos.</p>
+
+<h2>As datas que mais vendem</h2>
+<ul>
+<li><strong>Outubro</strong> &mdash; Nossa Senhora Aparecida e pe&ccedil;as infantis crist&atilde;s.</li>
+<li><strong>Novembro/Dezembro</strong> &mdash; Pres&eacute;pios, Natal e Sagrada Fam&iacute;lia.</li>
+<li><strong>Maio</strong> &mdash; m&ecirc;s de Maria: imagens marianas e coroa&ccedil;&otilde;es.</li>
+<li><strong>Sacramentos</strong> &mdash; batizados, primeira comunh&atilde;o, crisma e casamentos pedem lembrancinhas o ano todo.</li>
+<li><strong>Festas de padroeiro</strong> &mdash; cada cidade tem a sua; produza a imagem do santo local.</li>
+</ul>
+
+<h2>Como escolher o que produzir</h2>
+<ul>
+<li>Comece pelos campe&otilde;es (Aparecida, ter&ccedil;o, crucifixo): risco baixo e procura garantida.</li>
+<li>Tenha sempre uma pe&ccedil;a "de impacto" pra foto (litofania acesa, orat&oacute;rio grande).</li>
+<li>Ofere&ccedil;a 3 faixas de pre&ccedil;o: uma de entrada, uma m&eacute;dia e uma premium.</li>
+<li>Acompanhe o calend&aacute;rio lit&uacute;rgico e antecipe a produ&ccedil;&atilde;o das datas fortes.</li>
+</ul>
+
+<div class="tip"><strong>Dica:</strong> lembrancinhas de batizado, comunh&atilde;o e casamento s&atilde;o vendas recorrentes e em volume. Um &uacute;nico pedido de festa pode render dezenas de pe&ccedil;as iguais.</div>
+
+<h2>Resumo</h2>
+<p>Concentre-se nos campe&otilde;es, tenha uma pe&ccedil;a de impacto pra atrair no visual e produza com anteced&ecirc;ncia para as datas fortes. &Eacute; o caminho mais curto pra vender todos os meses.</p>
+` };
+GUIDES.b2_resumo = { title: "Tabela de Pre\u00e7os", html: `
+<p class="lead">Calcule o custo real, defina o pre&ccedil;o ideal e aumente seu lucro com seguran&ccedil;a. Se voc&ecirc; imprime pe&ccedil;as em 3D para vender, definir o pre&ccedil;o corretamente &eacute; um dos fatores mais importantes para manter um neg&oacute;cio saud&aacute;vel e lucrativo.</p>
+<div class="tip"><strong>O erro mais comum:</strong> muita gente calcula apenas o custo do filamento e esquece despesas como tempo de impress&atilde;o, energia el&eacute;trica, acabamento e embalagem. O resultado &eacute; simples: trabalham bastante, mas lucram muito menos do que imaginavam.</div>
+
+<h2>O que você vai aprender</h2>
+<ul>
+<li>Como calcular corretamente o custo do filamento.</li>
+<li>Como considerar o tempo de impress&atilde;o.</li>
+<li>Quais custos muitas pessoas esquecem de incluir.</li>
+<li>Como definir uma margem de lucro.</li>
+<li>Um modelo pr&aacute;tico para calcular o valor das suas pe&ccedil;as.</li>
+</ul>
+
+<h2>Os 7 fatores que influenciam no preço</h2>
+<p>O pre&ccedil;o de uma pe&ccedil;a impressa em 3D vai muito al&eacute;m do filamento. Para definir um valor justo e ter lucro de verdade, &eacute; essencial considerar todos os custos envolvidos na produ&ccedil;&atilde;o.</p>
+<ul>
+<li><strong>1. Filamento utilizado</strong> &mdash; o tipo de material, a quantidade utilizada e o pre&ccedil;o do filamento impactam diretamente no custo.</li>
+<li><strong>2. Tempo de impress&atilde;o</strong> &mdash; quanto maior o tempo de impress&atilde;o, maior o custo envolvido na produ&ccedil;&atilde;o da pe&ccedil;a.</li>
+<li><strong>3. Energia el&eacute;trica</strong> &mdash; toda impress&atilde;o consome energia. Esse custo também deve ser considerado no c&aacute;lculo.</li>
+<li><strong>4. Desgaste da impressora</strong> &mdash; peças desgastam com o tempo e precisam de substitui&ccedil;&atilde;o. Esse desgaste faz parte do custo.</li>
+<li><strong>5. Acabamento</strong> &mdash; lixamento, remo&ccedil;&atilde;o de rebarbas, alinhamento e outros processos demandam tempo e material.</li>
+<li><strong>6. Pintura (quando houver)</strong> &mdash; tinta, primer, verniz e o tempo gasto para pintar devem ser inclu&iacute;dos no pre&ccedil;o final.</li>
+<li><strong>7. Embalagem</strong> &mdash; caixas, pl&aacute;stico bolha, fita adesiva e outros materiais usados para embalar tamb&eacute;m geram custo.</li>
+</ul>
+<div class="tip"><strong>Dica importante:</strong> considerar todos esses fatores garante que voc&ecirc; n&atilde;o tenha preju&iacute;zo e consiga manter seu neg&oacute;cio saud&aacute;vel e lucrativo.</div>
+
+<h2>Tabela de precificação — preencha para cada peça</h2>
+<p>Use esta tabela para calcular o custo total da sua pe&ccedil;a e definir um pre&ccedil;o justo que garanta lucro para o seu neg&oacute;cio.</p>
+<table>
+<tr><th>Fator</th><th>Como calcular</th></tr>
+<tr><td><strong>1. Filamento</strong></td><td>gramas utilizadas &times; preço por grama</td></tr>
+<tr><td><strong>2. Tempo de impressão</strong></td><td>horas de impressão &times; valor da sua hora</td></tr>
+<tr><td><strong>3. Energia elétrica</strong></td><td>consumo da impressora (W) &times; horas &times; valor do kWh</td></tr>
+<tr><td><strong>4. Desgaste da impressora</strong></td><td>rateio de peças/manutenção (média por impressão)</td></tr>
+<tr><td><strong>5. Acabamento</strong></td><td>lixamento, remoção de rebarbas, alinhamento</td></tr>
+<tr><td><strong>6. Pintura (quando houver)</strong></td><td>tinta, primer, verniz e tempo gasto</td></tr>
+<tr><td><strong>7. Embalagem</strong></td><td>caixa, plástico bolha, fita adesiva e outros materiais</td></tr>
+</table>
+<p><strong>Custo total da peça</strong> = soma dos 7 valores acima.</p>
+<p><strong>Valor do lucro</strong> = Custo total &times; margem de lucro desejada (ex.: 30% = 0,30 / 50% = 0,50).</p>
+<p><strong>Preço final sugerido</strong> = Custo total + Valor do lucro.</p>
+
+<h2>Exemplo prático</h2>
+<table>
+<tr><th>Fator</th><th>Valor (R$)</th></tr>
+<tr><td>Filamento</td><td>R$ 9,60</td></tr>
+<tr><td>Tempo de impressão</td><td>R$ 4,00</td></tr>
+<tr><td>Energia elétrica</td><td>R$ 1,20</td></tr>
+<tr><td>Desgaste da impressora</td><td>R$ 1,50</td></tr>
+<tr><td>Acabamento</td><td>R$ 2,00</td></tr>
+<tr><td>Pintura</td><td>R$ 0,00</td></tr>
+<tr><td>Embalagem</td><td>R$ 1,70</td></tr>
+<tr><td><strong>Custo total</strong></td><td><strong>R$ 20,00</strong></td></tr>
+<tr><td>Margem de lucro (100%)</td><td>R$ 20,00</td></tr>
+<tr><td><strong>Preço final sugerido</strong></td><td><strong>R$ 40,00</strong></td></tr>
+</table>
+
+<div class="tip"><strong>Importante:</strong> esta tabela &eacute; uma ferramenta de apoio &mdash; cada projeto tem caracter&iacute;sticas diferentes (tamanho, material, tempo, acabamento, personaliza&ccedil;&atilde;o). Use-a como refer&ecirc;ncia para construir pre&ccedil;os mais consistentes e adequados &agrave; sua realidade. Nunca defina o pre&ccedil;o s&oacute; olhando o concorrente &mdash; calcule seu custo primeiro.</div>
+
+<h2>Resumo</h2>
+<p>Uma boa precifica&ccedil;&atilde;o n&atilde;o serve apenas para definir um pre&ccedil;o. Ela garante que cada impress&atilde;o gere lucro e contribua para o crescimento do seu neg&oacute;cio. Precificar bem &eacute; o primeiro passo para crescer de verdade.</p>
+` };
+GUIDES.b3 = { title: "Configura\u00e7\u00e3o de Impress\u00e3o", html: `
+<p class="lead">A mesma pe&ccedil;a pode sair perfeita ou cheia de defeitos &mdash; a diferen&ccedil;a est&aacute; na configura&ccedil;&atilde;o do fatiador. Aqui v&atilde;o os ajustes que garantem impress&otilde;es limpas nas pe&ccedil;as cat&oacute;licas.</p>
+
+<h2>Configura&ccedil;&otilde;es recomendadas</h2>
+<h3>Qualidade</h3>
+<ul>
+<li><strong>Altura de camada:</strong> 0,12 mm para muito detalhe (rostos, m&atilde;os, relevos); 0,2 mm para pe&ccedil;as maiores e mais r&aacute;pidas.</li>
+<li><strong>Largura de linha:</strong> 0,40 mm (bico padr&atilde;o).</li>
+</ul>
+<h3>Preenchimento</h3>
+<ul>
+<li><strong>Densidade:</strong> 15% a 20% para a maioria das imagens; 0% a 5% se a pe&ccedil;a for oca (litofania, lumin&aacute;ria).</li>
+<li><strong>Padr&atilde;o:</strong> c&uacute;bico ou giroide &mdash; bom equil&iacute;brio entre firmeza e tempo.</li>
+</ul>
+<h3>Temperatura</h3>
+<ul>
+<li><strong>Bico:</strong> 200 &deg;C (PLA) &mdash; ajuste pela etiqueta do filamento.</li>
+<li><strong>Mesa:</strong> 60 &deg;C.</li>
+</ul>
+<h3>Velocidade</h3>
+<ul>
+<li><strong>Impress&atilde;o:</strong> 50 mm/s.</li>
+<li><strong>Paredes:</strong> 25 mm/s &mdash; mais devagar nas paredes deixa o acabamento vis&iacute;vel muito melhor.</li>
+</ul>
+
+<h2>Suportes</h2>
+<p>Imagens de santo costumam ter partes salientes (m&atilde;os, mantos, coroas). Use suportes tipo "&aacute;rvore" com &acirc;ngulo de balan&ccedil;o de 50&deg; a 55&deg; e um pequeno espa&ccedil;amento (0,2 mm) pra soltar f&aacute;cil sem marcar a pe&ccedil;a.</p>
+
+<h2>Ades&atilde;o &agrave; mesa</h2>
+<ul>
+<li>Mesa limpa (&aacute;lcool isoprop&iacute;lico) e bem nivelada resolvem a maioria dos problemas.</li>
+<li>Primeira camada mais devagar e levemente "esmagada".</li>
+<li>Use "brim" (borda) em pe&ccedil;as com base pequena pra n&atilde;o descolar.</li>
+</ul>
+
+<h2>Detalhes que fazem diferen&ccedil;a</h2>
+<ul>
+<li><strong>Rostos e m&atilde;os:</strong> quanto menor a altura de camada, mais n&iacute;tida a express&atilde;o.</li>
+<li><strong>Litofanias:</strong> imprima com a face para cima, 0% de preenchimento e paredes finas pra luz atravessar.</li>
+<li><strong>Quadros em relevo:</strong> capriche nas paredes (3) pro relevo ficar firme.</li>
+</ul>
+
+<h2>Problemas comuns e solu&ccedil;&atilde;o</h2>
+<ul>
+<li><strong>Fios/cabelos:</strong> baixe um pouco a temperatura do bico e seque o filamento.</li>
+<li><strong>Detalhe borrado:</strong> reduza a altura de camada e a velocidade.</li>
+<li><strong>Pe&ccedil;a descolando:</strong> nivele e limpe a mesa, use brim.</li>
+<li><strong>Marcas dos suportes:</strong> aumente levemente o espa&ccedil;amento do suporte.</li>
+</ul>
+
+<h2>Resumo</h2>
+<p>Camada fina nos detalhes, paredes lentas pra acabamento, suportes tipo &aacute;rvore bem ajustados e mesa limpa e nivelada. Assim suas imagens saem com o n&iacute;vel de detalhe que valoriza (e vende) o produto.</p>
+` };
+GUIDES.b4_resumo = { title: "Mockups e Artes para Divulga\u00e7\u00e3o Cat\u00f3lica", html: `
+<p class="lead">Aprenda a divulgar suas pe&ccedil;as com imagens profissionais utilizando <strong>mockups prontos</strong> e <strong>templates edit&aacute;veis</strong>. Voc&ecirc; n&atilde;o precisa ser designer nem dominar programas complexos de edi&ccedil;&atilde;o &mdash; basta escolher um modelo, inserir a imagem da sua pe&ccedil;a e publicar com muito mais profissionalismo.</p>
+
+<h2>O que você encontra neste material</h2>
+<ul>
+<li><strong>30 mockups prontos</strong> para apresentar suas pe&ccedil;as.</li>
+<li><strong>20 artes</strong> para Stories.</li>
+<li><strong>20 artes</strong> para Feed.</li>
+<li><strong>10 banners</strong> para WhatsApp.</li>
+<li><strong>Templates edit&aacute;veis</strong> no Canva.</li>
+<li>Fundos e cen&aacute;rios exclusivos.</li>
+<li>Elementos gr&aacute;ficos para valorizar suas publica&ccedil;&otilde;es.</li>
+</ul>
+<div class="tip"><strong>Lembre-se:</strong> a primeira impress&atilde;o acontece antes mesmo do cliente ler a descri&ccedil;&atilde;o ou perguntar o pre&ccedil;o. Uma apresenta&ccedil;&atilde;o bem feita transmite profissionalismo, aumenta o valor percebido da pe&ccedil;a e torna sua divulga&ccedil;&atilde;o muito mais atrativa. Quem apresenta melhor, vende melhor.</div>
+
+<h2>Por que a apresentação vende mais?</h2>
+<p>Quando um cliente encontra sua publica&ccedil;&atilde;o, a primeira impress&atilde;o acontece em poucos segundos. Antes mesmo de ler a descri&ccedil;&atilde;o ou perguntar o valor, ele j&aacute; forma uma opini&atilde;o com base na imagem apresentada. Um bom mockup ou uma arte bem organizada ajuda a transmitir mais profissionalismo e confian&ccedil;a, al&eacute;m de destacar detalhes da pe&ccedil;a e criar uma identidade visual consistente.</p>
+<table>
+<tr><th>Apresentação fraca</th><th>Apresentação profissional</th></tr>
+<tr><td>Fundo sem harmonia</td><td>Fundo harmonioso</td></tr>
+<tr><td>Iluminação ruim</td><td>Iluminação adequada</td></tr>
+<tr><td>Pouco destaque</td><td>Destaque nos detalhes</td></tr>
+<tr><td>Imagem amadora</td><td>Imagem profissional</td></tr>
+<tr><td>Menor valor percebido</td><td>Maior valor percebido</td></tr>
+</table>
+
+<h2>Como usar os mockups</h2>
+<ul>
+<li>Utilize para divulgar suas peças no <strong>Instagram, Facebook, WhatsApp, Marketplace</strong> ou até em catálogos digitais.</li>
+<li>Escolha o modelo desejado, insira a imagem da sua peça (quando aplicável) e faça pequenos ajustes de tamanho e posicionamento.</li>
+<li>Use imagens com boa resolução e mantenha a iluminação natural da peça.</li>
+<li>Evite fundos muito carregados e centralize o produto.</li>
+<li>Deixe espaço para textos promocionais, caso necessário.</li>
+</ul>
+
+<h2>Como editar suas artes no Canva</h2>
+<p>Os templates foram criados para você personalizar de forma prática, mesmo que nunca tenha usado o Canva. Troque textos, cores, fontes e imagens para deixar cada arte com a sua cara.</p>
+<ol>
+<li><strong>Acesse o template</strong> — clique no link abaixo; ele abrirá automaticamente no Canva.</li>
+<li><strong>Clique para editar</strong> — selecione o texto ou elemento que deseja alterar.</li>
+<li><strong>Ajuste texto, fontes e cores</strong> — no topo do Canva, mude a fonte, o tamanho, a cor e o alinhamento.</li>
+<li><strong>Troque as imagens</strong> — clique em "Uploads", envie sua imagem e arraste para substituir a imagem do template.</li>
+<li><strong>Baixe sua arte</strong> — clique em "Baixar", escolha o formato (PNG recomendado) e pronto.</li>
+</ol>
+<div class="tip"><strong>Dicas rápidas:</strong> use fontes elegantes e fáceis de ler; mantenha uma paleta de cores harmoniosa; menos é mais — espaço em branco valoriza a arte; sempre revise os textos antes de baixar.</div>
+
+<p style="text-align:center;margin-top:22px"><a href="https://canva.link/stlcj7c6hxfks74" target="_blank" rel="noopener" class="dl" style="display:inline-block">Acessar templates no Canva</a></p>
+` };
+
+(function(){
+  var gm=document.getElementById('guideModal'), gt=document.getElementById('guideTitle'), gb=document.getElementById('guideBody');
+  window.openGuide=function(k){ var g=GUIDES[k]; if(!g||!gm) return; gt.textContent=g.title; gb.innerHTML=g.html; gm.classList.add('open'); document.body.style.overflow='hidden'; gm.scrollTop=0; };
+  window.closeGuide=function(){ if(!gm) return; gm.classList.remove('open'); document.body.style.overflow=''; };
+  var gc=document.getElementById('guideClose'); if(gc) gc.addEventListener('click', window.closeGuide);
+  if(gm) gm.addEventListener('click', function(e){ if(e.target===gm) window.closeGuide(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') window.closeGuide(); });
+  document.querySelectorAll('.guide-card').forEach(function(c){ c.addEventListener('click',function(){ openGuide(c.dataset.guide); }); });
+})();
+
+/* calculadora de precificação */
+window.calcPrecificacao = function(){
+  function num(id){ var el=document.getElementById(id); if(!el) return 0; var v=parseFloat(el.value); return isNaN(v)?0:v; }
+  function brl(v){ return 'R$ ' + v.toFixed(2).replace('.', ','); }
+  function set(id, v){ var el=document.getElementById(id); if(el) el.textContent = brl(v); }
+
+  var custoFilamento = (num('calcFilamentoG')/1000) * num('calcFilamentoPrecoKg');
+  var custoTempo = num('calcHoras') * num('calcValorHora');
+  var custoEnergia = (num('calcPotenciaW')/1000) * num('calcHoras') * num('calcPrecoKwh');
+  var custoDesgaste = num('calcDesgaste');
+  var custoAcabamento = num('calcAcabamento');
+  var custoPintura = num('calcPintura');
+  var custoEmbalagem = num('calcEmbalagem');
+
+  var custoTotal = custoFilamento + custoTempo + custoEnergia + custoDesgaste + custoAcabamento + custoPintura + custoEmbalagem;
+  var margem = num('calcMargem');
+  var lucro = custoTotal * (margem/100);
+  var precoFinal = custoTotal + lucro;
+
+  set('calcOutFilamento', custoFilamento);
+  set('calcOutTempo', custoTempo);
+  set('calcOutEnergia', custoEnergia);
+  set('calcOutDesgaste', custoDesgaste);
+  set('calcOutAcabamento', custoAcabamento);
+  set('calcOutPintura', custoPintura);
+  set('calcOutEmbalagem', custoEmbalagem);
+  set('calcOutCustoTotal', custoTotal);
+  set('calcOutLucro', lucro);
+  set('calcOutFinal', precoFinal);
+};
+
+/* links de download (Drive) e cadeado quando vazio */
+document.querySelectorAll('.dl[data-key]').forEach(function(btn){
+  var key=btn.dataset.key;
+  if(typeof GUIDES!=='undefined' && GUIDES[key]){
+    btn.href='#'; btn.textContent='Ler conte\u00fado';
+    btn.addEventListener('click',function(e){ e.preventDefault(); openGuide(key); });
+    return;
+  }
+  var url=(LINKS[key]||"").trim();
+  if(url){ btn.href=url; btn.target="_blank"; btn.rel="noopener"; }
+  else {
+    var card=btn.closest('.module'); if(card) card.classList.add('locked');
+    btn.removeAttribute('href'); btn.style.cursor='not-allowed';
+    btn.insertAdjacentHTML('afterend','<span class="badge-soon">🔒 Disponível em breve</span>');
+    btn.remove();
+  }
+});
+document.querySelectorAll('.dl-contact[data-key]').forEach(function(a){
+  var key=a.dataset.key, url=(LINKS[key]||"").trim();
+  if(url){ a.href=url; a.textContent=url.replace('mailto:','').replace('https://wa.me/','WhatsApp: '); if(!url.startsWith('mailto:')){a.target="_blank";a.rel="noopener";} }
+});
+</script>
+</body>
+</html>
